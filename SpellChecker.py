@@ -18,14 +18,22 @@ class SpellChecker:
         if not isinstance(words, str):
             raise Exception("check() takes a string")
 
+        misspelled = []
+        count = 0
         for word in word_tokenize(words):
             if word.lower() in self.allWords:
+                count += 1
                 continue
 
             if self.snowball.stem(word.lower()) in self.allWords:
+                count += 1
                 continue
 
             if self.porter.stem(word.lower()) in self.allWords:
+                count += 1
                 continue
 
-            print(word)
+            misspelled += (count, word, [])
+            count += 1
+
+        return misspelled

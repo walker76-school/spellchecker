@@ -10,7 +10,5 @@ if __name__ == "__main__":
 
     checker = SpellChecker()
 
-    checker.check("This is a misspell word united statez")
-
-
-
+    wrong = checker.check("This is a misspell word united statez")
+    print(wrong)
