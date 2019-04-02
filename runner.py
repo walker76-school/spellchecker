@@ -16,5 +16,6 @@ if __name__ == "__main__":
 
     checker = SpellChecker()
 
-    wrong = checker.check("This is a misspell word united statez apples aples")
+    wrong = checker.check("The szn did not shene. It was too weet to play. Sio we sat in the house All that cold, cold, wet day. I sat there with Sally. We sat there, we two. And I said,  How I wish We had something to do.")
+
     print(wrong)
