@@ -12,6 +12,7 @@ class SpellChecker:
         self.allWords = set(words.words())
         self.snowball = SnowballStemmer("english")
         self.porter = PorterStemmer()
+        self.wnl = WordNetLemmatizer()
         self.ngram = NGramModel(state_union, 2, 100)
 
     def check(self, words):
@@ -33,7 +34,11 @@ class SpellChecker:
                 count += 1
                 continue
 
-            misspelled += (count, word, [])
+            if self.wnl.lemmatize(word.lower()) in self.allWords:
+                count += 1
+                continue
+
+            misspelled.append((count, word, []))
             count += 1
 
         return misspelled
