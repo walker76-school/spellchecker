@@ -16,6 +16,6 @@ if __name__ == "__main__":
 
     checker = SpellChecker()
 
-    wrong = checker.check("The szn did not shene. It was too weet to play. Sio we sat in the house All that cold, cold, wet day. I sat there with Sally. We sat there, we two. And I said,  How I wish We had something to do.")
-
+    # paragraphs, are, papers, many, students
+    wrong = checker.check("Pargraphs ar the building blocks of ppers. Muny stedents define paragraphs in terms of length: a paragraph is a group of at least five sentences, a paragraph is half a page long, etc. In reality, though, the unity and coherence of ideas among sentences is what constitutes a paragraph. Length and appearance do not determine whether a section in a paper is a paragraph. For instance, in some styles of writing, particularly journalistic styles, a paragraph can be just one sentence long")
     print(wrong)

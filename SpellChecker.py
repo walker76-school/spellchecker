@@ -32,6 +32,7 @@ class SpellChecker:
                 continue
 
             candidates = self.all_edits_candidates(word)
+            sorted(candidates, key=lambda candidate: 1 - nltk.edit_distance(word, candidate))
 
             final_candidates = []
             gram = []
@@ -44,6 +45,10 @@ class SpellChecker:
                         final_candidates.append(tup)
 
             sorted(final_candidates, key=lambda final_tup: final_tup[1])
+
+            if len(final_candidates) == 0:
+                final_candidates = candidates
+
             misspelled.append((count, word, final_candidates))
             count += 1
 
