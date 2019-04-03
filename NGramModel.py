@@ -30,9 +30,8 @@ class NGramModel:
         self.tokenizer = RegexpTokenizer(r'\w+')
 
         self.gen_ngrams(brown)
-
-        # self.gen_ngrams(state_union)
-        # self.gen_ngrams(shakespeare)
+        self.gen_ngrams(state_union)
+        self.gen_ngrams(shakespeare)
 
     def gen_ngrams(self, corpus):
         raw = word_tokenize(corpus.raw())

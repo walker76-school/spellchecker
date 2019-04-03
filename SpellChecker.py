@@ -54,33 +54,42 @@ class SpellChecker:
             if word not in self.misspelled_dict:
 
                 # Retrieve all the edit distance candidates
-                candidates = self.all_edits_candidates(word)
+                edit_candidates = self.all_edits_candidates(word, 2)
 
-                final_candidates = []
+                gram_candidates = []
                 gram = []
                 if count >= 1:
                     gram.append(tokens[count - 1].lower())
                     gram.append(tokens[count].lower())
                     prob_tuples = self.ngram.prob(gram)
 
-                    # Filter out all candidates from ngram if it's not within reasonable edit distance
-                    final_candidates = [tup[0] for tup in prob_tuples if tup[0] in candidates]
+                    # These are all the candidates from the gram
+                    gram_candidates = [tup[0] for tup in prob_tuples]
 
-                # If the ngram didn't have anything then use the edit distance candidates
-                if len(final_candidates) == 0:
-                    final_candidates = candidates
+                # These are candidates in both so we really want them
+                absolute_candidates = [e1 for e1 in gram_candidates if e1 in edit_candidates]
 
                 # Remove duplicates
-                final_candidates = set(final_candidates)
-                final_candidates = list(final_candidates)
+                absolute_candidates = set(absolute_candidates)
+                absolute_candidates = list(absolute_candidates)
 
-                # Sort candidates based on freq in all corpra
-                sorted(final_candidates, key=lambda it: self.ngram.freq(it))
+                if len(absolute_candidates) > 0:
+                    if len(absolute_candidates) > 5:
+                        absolute_candidates = absolute_candidates[:5]
 
-                if len(final_candidates) > 5:
-                    final_candidates = final_candidates[:5]
+                    sorted(absolute_candidates, key=lambda e1: nltk.edit_distance(e1, word))
+                    self.misspelled_dict[word] = absolute_candidates
+                else:
 
-                self.misspelled_dict[word] = final_candidates
+                    # Store a list of all possible candidates
+                    all_candidates = edit_candidates
+
+                    all_candidates = set(all_candidates)
+                    all_candidates = list(all_candidates)
+
+                    sorted(all_candidates, key=lambda e1: 0.6 * self.ngram.freq(e1) + 0.4 * nltk.edit_distance(e1, word))
+                    candidates = all_candidates[:5]
+                    self.misspelled_dict[word] = candidates
 
             misspelled.append((count, word, self.misspelled_dict[word]))
             count += 1
@@ -102,7 +111,7 @@ class SpellChecker:
 
         return False
 
-    def all_edits_candidates(self, word):
+    def all_edits_candidates(self, word, level):
 
         print("Retrieving edit distance candidates for %s ..." % word)
 
@@ -110,7 +119,7 @@ class SpellChecker:
         edit_words = [word.lower()]
 
         # Keep looping, moving more distance away from original word until we have candidates
-        while len(candidates) <= 0:
+        while len(candidates) <= 0 and level > 0:
             raw_candidates = []
 
             # Check all permutations of all words
@@ -121,6 +130,7 @@ class SpellChecker:
 
             # Filter possible candidates to valid words only
             candidates = [e1 for e1 in raw_candidates if self.is_valid_word(e1)]
+            level -= 1
 
         print("Retrieved %d candidates" % len(candidates))
         return candidates
