@@ -17,6 +17,9 @@ if __name__ == "__main__":
     checker = SpellChecker()
 
     # paragraphs, are, papers, many, students
-    wrong = checker.check("This has already been debunked by lingustic professors, maybe someone has the link. It doesn’t seem to be very reliable, especially since it doesn’t evn sem to be from Cambridge. Check this article out at Cambridge. It has even been labeled an urban legend by some.")
+    wrong = checker.check("This has already been debunked by lingustic professors, maybe someone has the link. "
+                          "It doesn’t seem to be very reliable, especially since it doesn’t evn sem to be from "
+                          "Cambridge. Check this article out at Cambridge. It has even been labeled an urban legend "
+                          "by some.")
 
     print(wrong)
