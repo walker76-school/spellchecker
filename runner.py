@@ -8,14 +8,15 @@ from SpellChecker import SpellChecker
 
 if __name__ == "__main__":
 
-    nltk.download("brown")
-    nltk.download("state_union")
-    nltk.download("words")
-    nltk.download('punkt')
-    nltk.download('wordnet')
+    # nltk.download("brown")
+    # nltk.download("state_union")
+    # nltk.download("words")
+    # nltk.download('punkt')
+    # nltk.download('wordnet')
 
     checker = SpellChecker()
 
     # paragraphs, are, papers, many, students
-    wrong = checker.check("Pargraphs ar the building blocks of ppers. Muny stedents define paragraphs in terms of length: a paragraph is a group of at least five sentences, a paragraph is half a page long, etc. In reality, though, the unity and coherence of ideas among sentences is what constitutes a paragraph. Length and appearance do not determine whether a section in a paper is a paragraph. For instance, in some styles of writing, particularly journalistic styles, a paragraph can be just one sentence long")
+    wrong = checker.check("This has already been debunked by lingustic professors, maybe someone has the link. It doesn’t seem to be very reliable, especially since it doesn’t evn sem to be from Cambridge. Check this article out at Cambridge. It has even been labeled an urban legend by some.")
+
     print(wrong)
