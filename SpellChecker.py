@@ -23,6 +23,7 @@ class SpellChecker:
         print("Establishing NGramModel...")
         self.ngram = NGramModel(2)
         self.punctuations = '''’!()-[]{};:'"\,<>./?@#$%^&*_~'''
+        self.misspelled_dict = {}
         print("Done with constructor...")
 
     def check(self, words_str):
@@ -49,34 +50,39 @@ class SpellChecker:
                 count += 1
                 continue
 
-            # Retrieve all the edit distance candidates
-            candidates = self.all_edits_candidates(word)
+            # If we haven't already seen the word
+            if word not in self.misspelled_dict:
 
-            final_candidates = []
-            gram = []
-            if count >= 1:
-                gram.append(tokens[count - 1].lower())
-                gram.append(tokens[count].lower())
-                prob_tuples = self.ngram.prob(gram)
+                # Retrieve all the edit distance candidates
+                candidates = self.all_edits_candidates(word)
 
-                # Filter out all candidates from ngram if it's not within reasonable edit distance
-                final_candidates = [tup[0] for tup in prob_tuples if tup[0] in candidates]
+                final_candidates = []
+                gram = []
+                if count >= 1:
+                    gram.append(tokens[count - 1].lower())
+                    gram.append(tokens[count].lower())
+                    prob_tuples = self.ngram.prob(gram)
 
-            # If the ngram didn't have anything then use the edit distance candidates
-            if len(final_candidates) == 0:
-                final_candidates = candidates
+                    # Filter out all candidates from ngram if it's not within reasonable edit distance
+                    final_candidates = [tup[0] for tup in prob_tuples if tup[0] in candidates]
 
-            # Remove duplicates
-            final_candidates = set(final_candidates)
-            final_candidates = list(final_candidates)
+                # If the ngram didn't have anything then use the edit distance candidates
+                if len(final_candidates) == 0:
+                    final_candidates = candidates
 
-            # Sort candidates based on freq in all corpra
-            sorted(final_candidates, key=lambda it: self.ngram.freq(it))
+                # Remove duplicates
+                final_candidates = set(final_candidates)
+                final_candidates = list(final_candidates)
 
-            if len(final_candidates) > 5:
-                final_candidates = final_candidates[:5]
+                # Sort candidates based on freq in all corpra
+                sorted(final_candidates, key=lambda it: self.ngram.freq(it))
 
-            misspelled.append((count, word, final_candidates))
+                if len(final_candidates) > 5:
+                    final_candidates = final_candidates[:5]
+
+                self.misspelled_dict[word] = final_candidates
+
+            misspelled.append((count, word, self.misspelled_dict[word]))
             count += 1
 
         return misspelled
