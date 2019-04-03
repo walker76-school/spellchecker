@@ -1,7 +1,8 @@
 from collections import Counter
 from nltk import ngrams
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.corpus import brown, state_union, shakespeare
+import string
 
 
 class NGramModel:
@@ -23,12 +24,21 @@ class NGramModel:
         # get the counter of the gramsOfSmaller
         self.ngram_minor_counter = Counter()
 
+        # raw word counter
+        self.raw_counter = Counter()
+
+        self.tokenizer = RegexpTokenizer(r'\w+')
+
         self.gen_ngrams(brown)
-        self.gen_ngrams(state_union)
-        self.gen_ngrams(shakespeare)
+
+        # self.gen_ngrams(state_union)
+        # self.gen_ngrams(shakespeare)
 
     def gen_ngrams(self, corpus):
         raw = word_tokenize(corpus.raw())
+        raw = [e1.lower() for e1 in raw]
+
+        self.raw_counter = self.raw_counter + Counter(raw)
 
         # The ngrams of the the new listing of words
         self.ngram_major += ngrams(raw, self.numberGrams)
@@ -42,16 +52,16 @@ class NGramModel:
         # get the counter of the gramsOfSmaller
         self.ngram_minor_counter = Counter(self.ngram_minor)
 
-    def prob_bad(self, l):
+    def freq(self, word):
+        if word in self.raw_counter:
+            return self.raw_counter[word]
+
+        return -1
+
+    def prob(self, l):
         # make sure the list l has same length of corpus trained on
         if len(l) != self.numberGrams:
             return -1
-
-        gram = tuple(l)
-
-        # get the shorter gram
-        shorter_list = l[:-1]
-        small_gram = tuple(shorter_list)
 
         # get the total amount of occurrences for that gram
         num_total_gram = 0
