@@ -1,7 +1,7 @@
 from collections import Counter
 from nltk import ngrams
 from nltk.tokenize import word_tokenize, RegexpTokenizer
-from nltk.corpus import brown, state_union, shakespeare
+from nltk.corpus import brown, state_union, shakespeare, gutenberg, twitter_samples
 import string
 
 
@@ -32,6 +32,7 @@ class NGramModel:
         self.gen_ngrams(brown)
         self.gen_ngrams(state_union)
         self.gen_ngrams(shakespeare)
+        # self.gen_ngrams(gutenberg)
 
     def gen_ngrams(self, corpus):
         raw = word_tokenize(corpus.raw())

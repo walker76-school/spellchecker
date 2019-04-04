@@ -87,7 +87,8 @@ class SpellChecker:
                     all_candidates = set(all_candidates)
                     all_candidates = list(all_candidates)
 
-                    sorted(all_candidates, key=lambda e1: 0.6 * self.ngram.freq(e1) + 0.4 * nltk.edit_distance(e1, word))
+                    # Best - 0.6, 0.4
+                    sorted(all_candidates, key=lambda e1: 0.7 * self.ngram.freq(e1) + 0.3 * nltk.edit_distance(e1, word), reverse=True)
                     candidates = all_candidates[:5]
                     self.misspelled_dict[word] = candidates
 
