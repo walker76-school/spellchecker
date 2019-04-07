@@ -1,7 +1,9 @@
+import nltk
 from collections import Counter
 from nltk import ngrams
+from nltk.stem import *
 from nltk.tokenize import word_tokenize, RegexpTokenizer
-from nltk.corpus import brown, state_union, shakespeare, gutenberg, twitter_samples
+from nltk.corpus import brown, state_union, shakespeare, gutenberg, twitter_samples, PlaintextCorpusReader, reuters
 import string
 
 
@@ -29,16 +31,32 @@ class NGramModel:
 
         self.tokenizer = RegexpTokenizer(r'\w+')
 
+        self.wnl = WordNetLemmatizer()
+        self.punctuations = '''’!()-[]{};:'"\,<>./?@#$%^&*_~'''
+
         self.gen_ngrams(brown)
         self.gen_ngrams(state_union)
         self.gen_ngrams(shakespeare)
-        # self.gen_ngrams(gutenberg)
+        self.gen_ngrams(gutenberg)
+        self.gen_ngrams(reuters)
+        # self.gen_ngrams(PlaintextCorpusReader(fileids=["test.txt"], root="./"))
 
     def gen_ngrams(self, corpus):
+        # raw_raw = corpus.words()
+        # raw_raw = [e1.lower() for e1 in raw_raw]
+        # raw = []
+        # for e1 in raw_raw:
+        #     valid = True
+        #     for char in e1:
+        #         if char in self.punctuations:
+        #             valid = False
+        #     if valid:
+        #         raw.append(e1)
+        #
+        # self.raw_counter = self.raw_counter + Counter(raw)
+
         raw = word_tokenize(corpus.raw())
         raw = [e1.lower() for e1 in raw]
-
-        self.raw_counter = self.raw_counter + Counter(raw)
 
         # The ngrams of the the new listing of words
         self.ngram_major += ngrams(raw, self.numberGrams)
@@ -80,3 +98,6 @@ class NGramModel:
 
         # return the probability
         return listOfTuples
+
+    def contains(self, word):
+        return word in self.ngram_minor_counter

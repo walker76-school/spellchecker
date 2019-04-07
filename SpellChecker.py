@@ -11,17 +11,20 @@ import string
 class SpellChecker:
 
     def __init__(self):
-        print("Establishing all words...")
+        print("Establishing all words ...")
         self.allWords = set(words.words()).union(set(string.punctuation))
         self.countWords = Counter(self.allWords)
         self.numWords = len(self.allWords)
-        print("Establishing stemmers...")
+
+        print("Establishing stemmers ...")
         self.snowball = SnowballStemmer("english")
         self.porter = PorterStemmer()
         self.wnl = WordNetLemmatizer()
-        self.tokenizer = RegexpTokenizer(r'\w+')
-        print("Establishing NGramModel...")
+
+        print("Establishing NGramModel ...")
         self.ngram = NGramModel(2)
+
+        print("Establishing helper vars ... ")
         self.punctuations = '''’!()-[]{};:'"\,<>./?@#$%^&*_~'''
         self.misspelled_dict = {}
         print("Done with constructor...")
@@ -41,7 +44,7 @@ class SpellChecker:
 
         # Tokenize the sentence passed
         tokens = word_tokenize(filtered_str)
-        print("Discovered %d tokens" % len(tokens))
+        print("Discovered %d tokens " % len(tokens))
 
         for word in tokens:
 
@@ -57,38 +60,39 @@ class SpellChecker:
                 edit_candidates = self.all_edits_candidates(word, 2)
 
                 gram_candidates = []
-                gram = []
                 if count >= 1:
-                    gram.append(tokens[count - 1].lower())
-                    gram.append(tokens[count].lower())
-                    prob_tuples = self.ngram.prob(gram)
-
-                    # These are all the candidates from the gram
-                    gram_candidates = [tup[0] for tup in prob_tuples]
+                    gram = [tokens[count - 1].lower(), word.lower()]
+                    gram_candidates = self.ngram.prob(gram)
+                    sorted(gram_candidates, key=lambda e1: e1[1])
 
                 # These are candidates in both so we really want them
-                absolute_candidates = [e1 for e1 in gram_candidates if e1 in edit_candidates]
-
-                # Remove duplicates
-                absolute_candidates = set(absolute_candidates)
-                absolute_candidates = list(absolute_candidates)
+                absolute_candidates = [e1[0] for e1 in gram_candidates if e1[0] in edit_candidates]
 
                 if len(absolute_candidates) > 0:
+
+                    sorted(absolute_candidates, key=lambda e1: nltk.edit_distance(e1, word))
+
                     if len(absolute_candidates) > 5:
                         absolute_candidates = absolute_candidates[:5]
 
-                    sorted(absolute_candidates, key=lambda e1: nltk.edit_distance(e1, word))
                     self.misspelled_dict[word] = absolute_candidates
                 else:
 
-                    # Store a list of all possible candidates
-                    all_candidates = edit_candidates
+                    gram_candidates = [e1 for e1 in gram_candidates if nltk.edit_distance(e1, word) < 3]
+                    sorted(gram_candidates, key=lambda e1: e1[1])
 
-                    all_candidates = set(all_candidates)
-                    all_candidates = list(all_candidates)
+                    if len(gram_candidates) > 5:
+                        gram_candidates = gram_candidates[:5]
+
+                    sorted(edit_candidates, key=lambda e1: nltk.edit_distance(e1, word))
+
+                    if len(edit_candidates) > 5:
+                        edit_candidates = edit_candidates[:5]
+
+                    all_candidates = edit_candidates + gram_candidates
 
                     # Best - 0.6, 0.4
-                    sorted(all_candidates, key=lambda e1: 0.7 * self.ngram.freq(e1) + 0.3 * nltk.edit_distance(e1, word), reverse=True)
+                    sorted(all_candidates, key=lambda e1: 0.5 * self.ngram.freq(e1) + 0.5 * (1 - nltk.edit_distance(e1, word)))
                     candidates = all_candidates[:5]
                     self.misspelled_dict[word] = candidates
 

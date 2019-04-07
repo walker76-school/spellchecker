@@ -1,4 +1,5 @@
 from SpellChecker import SpellChecker
+import nltk
 
 if __name__ == "__main__":
 
@@ -9,6 +10,7 @@ if __name__ == "__main__":
     # nltk.download('wordnet')
     # nltk.download('gutenberg')
     # nltk.download('twitter_samples')
+    nltk.download('reuters')
 
     checker = SpellChecker()
 
@@ -20,6 +22,10 @@ if __name__ == "__main__":
     wrong = checker.check("The water aill is thirty dollars. ")
     print(wrong)
 
+    # star - OK
+    wrong = checker.check("The European Southern Observatory will release the first glimpse of a collapsed btar in the center of our galaxy. ")
+    print(wrong)
+
     # new - X
     wrong = checker.check("Tomorrow is a brand ewnd day.")
     print(wrong)
@@ -29,7 +35,7 @@ if __name__ == "__main__":
     wrong = checker.check("The road lpeds to nowprae.")
     print(wrong)
 
-    # ball - X
-    # wall - X
+    # ball - OK
+    # wall - OK
     wrong = checker.check("John kicks the uall to the brick uall. ")
     print(wrong)
