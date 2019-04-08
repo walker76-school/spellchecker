@@ -68,11 +68,6 @@ class SpellChecker:
                 absolute_candidates = set(absolute_candidates)
                 absolute_candidates = list(absolute_candidates)
 
-                pos = "?"
-                for tup in tags:
-                    if tup[0] == word:
-                        pos = tup[1]
-
                 if len(absolute_candidates) > 0:
 
                     absolute_candidates.sort(key=lambda e1: self.ngram.freq(e1))
@@ -92,13 +87,8 @@ class SpellChecker:
                     if len(gram_candidates) > 5:
                         gram_candidates = gram_candidates[:5]
 
-                    temp = []
-                    for e1 in edit_candidates:
-                        if self.pos_match(e1, pos):
-                            temp.append(e1)
-                    edit_candidates = temp
-
-                    edit_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word))
+                    # edit_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word), reverse=True)
+                    edit_candidates.sort(key=lambda e1: self.ngram.freq(e1), reverse=True)
 
                     if len(edit_candidates) > 5:
                         edit_candidates = edit_candidates[:5]
@@ -106,8 +96,8 @@ class SpellChecker:
                     # The best candidates from each group
                     all_candidates = edit_candidates + gram_candidates
 
-                    all_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word), reverse=True)
-                    all_candidates.sort(key=lambda e1: self.ngram.freq(e1))
+                    all_candidates.sort(key=lambda e1: self.ngram.freq(e1), reverse=True)
+                    all_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word))
                     candidates = all_candidates[:5]
                     self.misspelled_dict[word] = candidates
 
@@ -137,7 +127,7 @@ class SpellChecker:
         edit_words = [word.lower()]
 
         # Keep looping, moving more distance away from original word until we have candidates
-        while len(candidates) <= 25 and level > 0:
+        while level > 0:
             raw_candidates = []
 
             # Check all permutations of all words

@@ -2,7 +2,7 @@ from collections import Counter
 from nltk import ngrams
 from nltk.stem import *
 from nltk.tokenize import word_tokenize, RegexpTokenizer
-from nltk.corpus import brown, state_union, shakespeare, gutenberg, reuters, treebank_raw
+from nltk.corpus import brown, state_union, shakespeare, gutenberg, reuters, treebank_raw, PlaintextCorpusReader
 
 
 class NGramModel:
@@ -27,17 +27,9 @@ class NGramModel:
         # raw word counter
         self.raw_counter = Counter()
 
-        self.tokenizer = RegexpTokenizer(r'\w+')
-
         self.wnl = WordNetLemmatizer()
-        self.punctuations = '''’!()-[]{};:'"\,<>./?@#$%^&*_~'''
 
-        self.gen_ngrams(brown)
-        # self.gen_ngrams(state_union)
-        # self.gen_ngrams(shakespeare)
-        self.gen_ngrams(gutenberg)
-        self.gen_ngrams(reuters)
-        # self.gen_ngrams(treebank_raw)
+        self.gen_ngrams(PlaintextCorpusReader(fileids=["corpus.txt"], root="./"))
 
     def gen_ngrams(self, corpus):
 
