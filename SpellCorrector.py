@@ -7,7 +7,7 @@ from collections import Counter
 import string
 
 
-class SpellChecker:
+class SpellCorrector:
 
     def __init__(self):
         self.allWords = set(words.words()).union(set(string.punctuation))

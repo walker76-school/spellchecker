@@ -1,8 +1,8 @@
 from collections import Counter
 from nltk import ngrams
 from nltk.stem import *
-from nltk.tokenize import word_tokenize, RegexpTokenizer
-from nltk.corpus import brown, state_union, shakespeare, gutenberg, reuters, treebank_raw, PlaintextCorpusReader
+from nltk.tokenize import word_tokenize
+from nltk.corpus import PlaintextCorpusReader
 
 
 class NGramModel:
