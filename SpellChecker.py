@@ -38,7 +38,6 @@ class SpellChecker:
 
         # Tokenize the sentence passed
         tokens = word_tokenize(filtered_str)
-        tags = nltk.pos_tag(tokens)
 
         for word in tokens:
 
@@ -87,7 +86,7 @@ class SpellChecker:
                     if len(gram_candidates) > 5:
                         gram_candidates = gram_candidates[:5]
 
-                    # edit_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word), reverse=True)
+                    edit_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word))
                     edit_candidates.sort(key=lambda e1: self.ngram.freq(e1), reverse=True)
 
                     if len(edit_candidates) > 5:

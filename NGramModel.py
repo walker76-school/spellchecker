@@ -30,6 +30,7 @@ class NGramModel:
         self.wnl = WordNetLemmatizer()
 
         self.gen_ngrams(PlaintextCorpusReader(fileids=["corpus.txt"], root="./"))
+        # self.gen_ngrams(brown)
 
     def gen_ngrams(self, corpus):
 
