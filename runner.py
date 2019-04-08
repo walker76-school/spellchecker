@@ -10,7 +10,8 @@ if __name__ == "__main__":
     # nltk.download('wordnet')
     # nltk.download('gutenberg')
     # nltk.download('twitter_samples')
-    nltk.download('reuters')
+    # nltk.download('reuters')
+    # nltk.download('treebank')
 
     checker = SpellChecker()
 

@@ -1,10 +1,8 @@
-import nltk
 from collections import Counter
 from nltk import ngrams
 from nltk.stem import *
 from nltk.tokenize import word_tokenize, RegexpTokenizer
-from nltk.corpus import brown, state_union, shakespeare, gutenberg, twitter_samples, PlaintextCorpusReader, reuters
-import string
+from nltk.corpus import brown, state_union, shakespeare, gutenberg, reuters, treebank_raw
 
 
 class NGramModel:
@@ -35,25 +33,13 @@ class NGramModel:
         self.punctuations = '''’!()-[]{};:'"\,<>./?@#$%^&*_~'''
 
         self.gen_ngrams(brown)
-        self.gen_ngrams(state_union)
-        self.gen_ngrams(shakespeare)
+        # self.gen_ngrams(state_union)
+        # self.gen_ngrams(shakespeare)
         self.gen_ngrams(gutenberg)
         self.gen_ngrams(reuters)
-        # self.gen_ngrams(PlaintextCorpusReader(fileids=["test.txt"], root="./"))
+        self.gen_ngrams(treebank_raw)
 
     def gen_ngrams(self, corpus):
-        # raw_raw = corpus.words()
-        # raw_raw = [e1.lower() for e1 in raw_raw]
-        # raw = []
-        # for e1 in raw_raw:
-        #     valid = True
-        #     for char in e1:
-        #         if char in self.punctuations:
-        #             valid = False
-        #     if valid:
-        #         raw.append(e1)
-        #
-        # self.raw_counter = self.raw_counter + Counter(raw)
 
         raw = word_tokenize(corpus.raw())
         raw = [e1.lower() for e1 in raw]
