@@ -12,8 +12,11 @@ if __name__ == "__main__":
     # nltk.download('twitter_samples')
     # nltk.download('reuters')
     # nltk.download('treebank')
+    nltk.download('averaged_perceptron_tagger')
 
     checker = SpellChecker()
+
+    print("Done creating SpellChecker")
 
     # able - OK
     wrong = checker.check("I was aple to sleep tonight. ")

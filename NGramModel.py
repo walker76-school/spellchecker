@@ -37,7 +37,7 @@ class NGramModel:
         # self.gen_ngrams(shakespeare)
         self.gen_ngrams(gutenberg)
         self.gen_ngrams(reuters)
-        self.gen_ngrams(treebank_raw)
+        # self.gen_ngrams(treebank_raw)
 
     def gen_ngrams(self, corpus):
 

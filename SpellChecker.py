@@ -38,6 +38,7 @@ class SpellChecker:
 
         # Tokenize the sentence passed
         tokens = word_tokenize(filtered_str)
+        tags = nltk.pos_tag(tokens)
 
         for word in tokens:
 
@@ -67,6 +68,11 @@ class SpellChecker:
                 absolute_candidates = set(absolute_candidates)
                 absolute_candidates = list(absolute_candidates)
 
+                pos = "?"
+                for tup in tags:
+                    if tup[0] == word:
+                        pos = tup[1]
+
                 if len(absolute_candidates) > 0:
 
                     absolute_candidates.sort(key=lambda e1: self.ngram.freq(e1))
@@ -85,6 +91,12 @@ class SpellChecker:
 
                     if len(gram_candidates) > 5:
                         gram_candidates = gram_candidates[:5]
+
+                    temp = []
+                    for e1 in edit_candidates:
+                        if self.pos_match(e1, pos):
+                            temp.append(e1)
+                    edit_candidates = temp
 
                     edit_candidates.sort(key=lambda e1: nltk.edit_distance(e1, word))
 
@@ -150,3 +162,11 @@ class SpellChecker:
         insert_chars = [left + let + right for left, right in split_word for let in letters]
 
         return set(delete_chars + switch_chars + replace_chars + insert_chars)
+
+    def pos_match(self, word, pos):
+        pos_key = pos[:1].lower()
+        if pos_key != "n" and pos_key != "v" and pos_key != "a":
+            return False
+
+        synsets = nltk.corpus.wordnet.synsets(word, pos=pos_key)
+        return len(synsets) > 0
